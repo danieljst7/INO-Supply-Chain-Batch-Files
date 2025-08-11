@@ -1,0 +1,39 @@
+@echo off
+echo =========================================
+echo  Safe WMI Restart Script
+echo =========================================
+echo.
+
+REM Check current WMI service status
+for /f "tokens=3 delims=: " %%H in ('sc query winmgmt ^| findstr "STATE"') do (
+    set state=%%H
+)
+
+REM Remove any extra spaces from state variable
+set state=%state: =%
+
+if /i "%state%"=="RUNNING" (
+    echo WMI service is currently RUNNING. Attempting to stop...
+    net stop winmgmt /y
+) else (
+    echo WMI service is not running. Skipping stop step.
+)
+
+echo.
+
+REM Check again before starting
+for /f "tokens=3 delims=: " %%H in ('sc query winmgmt ^| findstr "STATE"') do (
+    set state=%%H
+)
+set state=%state: =%
+
+if /i "%state%"=="STOPPED" (
+    echo Starting WMI service...
+    net start winmgmt
+) else (
+    echo WMI service is already running. Skipping start step.
+)
+
+echo.
+echo Script finished.
+pause
