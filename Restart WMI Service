@@ -1,0 +1,8 @@
+--save as .bat file and make sure it run in administrator
+
+@echo off
+echo Restarting Windows Management Instrumentation (WMI) service...  --this one is uneccessary...just a user-friendly comment
+net stop winmgmt /y
+net start winmgmt
+echo WMI service restarted successfully.
+pause
